@@ -15,6 +15,7 @@ app.set('views', path.resolve(__dirname, './views'));
 app.set('view engine', 'ejs');
 
 app.use(express.static(path.resolve(__dirname, '../public')));
+app.use(express.urlencoded({ extended : false})); //para permitir un json
 
 app.use('/', indexRouter);
 app.use(moviesRoutes);
