@@ -1,6 +1,8 @@
 
 const moment = require('moment'); // require
 const db = require('../database/models/index')
+const {validationResult} = require('express-validator');
+
 
 
 module.exports = {
@@ -56,6 +58,10 @@ module.exports = {
         
     },
     create: function (req, res) {
+        let errors = validationResult(req);
+        
+        
+        if(errors.isEmpty()){
         const{title, release_date, rating, awards, genre_id, length} = req.body;
         db.Movie.create({
             ...req.body,
@@ -66,6 +72,14 @@ module.exports = {
                 return res.redirect('/movies/detail/' + movie.id)
             })
             .catch(error => console.log(error))
+            
+        }else{
+            db.Genre.findAll({ order: ["name"] })
+                .then(genres => res.render("moviesAdd", { genres, errors: errors.mapped(), old: req.body }))
+                .catch(error => console.log(error))
+        }
+
+        
     },
     edit: function(req, res) {
         let genres = db.Genre.findAll({
